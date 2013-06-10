@@ -14,6 +14,15 @@
 # limitations under the License.
 #
 
+# Inherit overlay
+DEVICE_PACKAGE_OVERLAYS := device/softwinner/vortexc/overlay
+
+# Tablet configuration
+PRODUCT_CHARACTERISTICS := tablet
+
+PRODUCT_TAGS += dalvik.gc.type-precise
+
+# Ramdisk
 PRODUCT_COPY_FILES := \
 	device/softwinner/vortexc/prebuilt/ramdisk/kernel:kernel \
 	device/softwinner/vortexc/prebuilt/ramdisk/init.rc:root/init.rc \
@@ -25,6 +34,8 @@ PRODUCT_COPY_FILES := \
 	device/softwinner/vortexc/prebuilt/ramdisk/ueventd.sun5i.rc:root/ueventd.sun5i.rc \
 	device/softwinner/vortexc/prebuilt/ramdisk/nand.ko:root/nand.ko
 
+<<<<<<< HEAD
+=======
 PRODUCT_CHARACTERISTICS := tablet
 
 PRODUCT_TAGS += dalvik.gc.type-precise
@@ -64,6 +75,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 DEVICE_PACKAGE_OVERLAYS := device/softwinner/vortexc/overlay
 
+>>>>>>> 6cb79b76db4cfdbf62aa0484915036e393640257
 # Permissions
 PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/tablet_core_hardware.xml:system/etc/permissions/tablet_core_hardware.xml \
@@ -80,16 +92,13 @@ PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
 	packages/wallpapers/LivePicker/android.software.live_wallpaper.xml:/system/etc/permissions/android.software.live_wallpaper.xml
 
-# Publish that we support the live wallpaper feature.
+# Live Wallapapers
 PRODUCT_PACKAGES += \
 	LiveWallpapers \
 	LiveWallpapersPicker \
 	MagicSmokeWallpapers \
-	HoloSpiralWallpaper 
-
-PRODUCT_PACKAGES += \
-	VisualizationWallpapers \
-	librs_jni
+	HoloSpiralWallpaper \
+	VisualizationWallpapers
 
 # Hardware libs
 PRODUCT_PACKAGES += \
@@ -117,25 +126,14 @@ PRODUCT_PACKAGES += \
 	libaudioutils \
 	chat \
 	u3gmonitor \
-	devlistener
-
-# CM9 apps
-PRODUCT_PACKAGES += \
-	com.android.future.usb.accessory
+	devlistener \
+	librs_jni
 
 # EXT4 Support
 PRODUCT_PACKAGES += \
 	make_ext4fs \
 	e2fsck
 
-$(call inherit-product, build/target/product/full_base.mk)
-
-# Should be after the full_base include, which loads languages_full
-PRODUCT_AAPT_CONFIG := large hdpi
-PRODUCT_AAPT_PREF_CONFIG := hdpi
-
-PRODUCT_NAME := full_vortexc
-PRODUCT_DEVICE := vortexc
-
-TARGET_SCREEN_HEIGHT := 800
-TARGET_SCREEN_WIDTH := 480
+# CM9 apps
+PRODUCT_PACKAGES += \
+	com.android.future.usb.accessory

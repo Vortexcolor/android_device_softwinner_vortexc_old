@@ -69,6 +69,7 @@ TARGET_BOOTANIMATION_PRELOAD := true
 TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT := device/softwinner/vortexc/releasetools/vortexc_ota_from_target_files
 
 # Wifi stuff
+BOARD_WIFI_VENDOR := realtek
 WPA_SUPPLICANT_VERSION := VER_0_8_X
 BOARD_WPA_SUPPLICANT_DRIVER := WEXT
 BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_rtl

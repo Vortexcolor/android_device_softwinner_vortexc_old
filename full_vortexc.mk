@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # Inherit from those products. Most specific first.
-$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)
+$(call inherit-product, build/target/product/full_base.mk)
 $(call inherit-product, device/softwinner/vortexc/vortexc.mk)
 $(call inherit-product, device/softwinner/vortexc/libraries/Android.mk)
 $(call inherit-product, device/softwinner/vortexc/packages/Android.mk)
@@ -28,8 +28,10 @@ PRODUCT_BRAND := Allwinner
 PRODUCT_MODEL := MPvortexcC
 PRODUCT_MANUFACTURER := Allwinner
 
+# MDPI / HDPI images
+PRODUCT_AAPT_CONFIG := hdpi mdpi
+PRODUCT_AAPT_PREF_CONFIG := mdpi
 
-
-
-
-
+# Screen layout
+TARGET_SCREEN_HEIGHT := 800
+TARGET_SCREEN_WIDTH := 480

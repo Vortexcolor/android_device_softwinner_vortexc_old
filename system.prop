@@ -1,0 +1,54 @@
+#
+# system.prop for vortexc
+#
+
+# EGL / Display
+ro.opengles.version = 131072
+debug.egl.hw=1
+ro.display.switch=1
+ro.sf.lcd_density=160
+hwui.render_dirty_regions=false
+debug.sf.hw=1
+video.accelerate.hw=1
+
+# WIFI / RIL
+wifi.interface = wlan0
+wifi.supplicant_scan_interval = 150
+persist.sys.use_dithering=0
+
+# Dalvik
+dalvik.vm.verify-bytecode=false
+dalvik.vm.dexopt-flags=v=n,o=v
+dalvik.vm.execution-mode=int:jit
+dalvik.vm.checkjni=false
+dalvik.vm.dexopt-data-only=1
+dalvik.vm.lockprof.threshold=500
+ro.kernel.android.checkjni=0
+dalvik.vm.heapsize=48m
+
+# Mass Storage
+persist.sys.usb.config=mass_storage,adb
+ro.additionalmounts=/storage/sdcard1
+ro.vold.switchablepair=/storage/sdcard0,/storage/sdcard1
+persist.sys.vold.switchexternal=0
+ro.vold.umsdirtyratio=20
+
+# Google location
+ro.com.google.locationfeatures=1
+
+# Deep sleep
+pm.sleep_mode=1
+
+# Other build.prop tweaks
+ro.media.dec.jpeg.memcap=20000000
+net.dns1=8.8.8.8
+net.dns2=8.8.4.4
+ro.media.enc.jpeg.quality=100
+debug.performance.tuning=1
+ro.media.dec.jpeg.memcap=8000000
+ro.media.enc.hprof.vid.bps=800000
+persist.sys.purgeable_assets=0
+windowsmgr.max_events_per_sec=240
+view.touch_slop=2
+view.minimum_fling_velocity=25
+
