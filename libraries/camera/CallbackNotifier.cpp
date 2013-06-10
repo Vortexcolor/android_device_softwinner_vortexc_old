@@ -83,7 +83,7 @@ static void PrintMessages(uint32_t msg)
     const char* strs[lCameraMessagesNum];
     const int translated = GetMessageStrings(msg, strs, lCameraMessagesNum);
     for (int n = 0; n < translated; n++) {
-        LOGV("    %s", strs[n]);
+        ALOGV("    %s", strs[n]);
     }
 }
 
@@ -125,7 +125,7 @@ void CallbackNotifier::setCallbacks(camera_notify_callback notify_cb,
                                     camera_request_memory get_memory,
                                     void* user)
 {
-    LOGV("%s: %p, %p, %p, %p (%p)",
+    ALOGV("%s: %p, %p, %p, %p (%p)",
          __FUNCTION__, notify_cb, data_cb, data_cb_timestamp, get_memory, user);
 
     Mutex::Autolock locker(&mObjectLock);
@@ -138,29 +138,29 @@ void CallbackNotifier::setCallbacks(camera_notify_callback notify_cb,
 
 void CallbackNotifier::enableMessage(uint msg_type)
 {
-    LOGV("%s: msg_type = 0x%x", __FUNCTION__, msg_type);
+    ALOGV("%s: msg_type = 0x%x", __FUNCTION__, msg_type);
     PrintMessages(msg_type);
 
     Mutex::Autolock locker(&mObjectLock);
     mMessageEnabler |= msg_type;
-    LOGV("**** Currently enabled messages:");
+    ALOGV("**** Currently enabled messages:");
     PrintMessages(mMessageEnabler);
 }
 
 void CallbackNotifier::disableMessage(uint msg_type)
 {
-    LOGV("%s: msg_type = 0x%x", __FUNCTION__, msg_type);
+    ALOGV("%s: msg_type = 0x%x", __FUNCTION__, msg_type);
     PrintMessages(msg_type);
 
     Mutex::Autolock locker(&mObjectLock);
     mMessageEnabler &= ~msg_type;
-    LOGV("**** Currently enabled messages:");
+    ALOGV("**** Currently enabled messages:");
     PrintMessages(mMessageEnabler);
 }
 
 status_t CallbackNotifier::enableVideoRecording(int fps)
 {
-    LOGV("%s: FPS = %d", __FUNCTION__, fps);
+    ALOGV("%s: FPS = %d", __FUNCTION__, fps);
 
     Mutex::Autolock locker(&mObjectLock);
     mVideoRecEnabled = true;
@@ -172,7 +172,7 @@ status_t CallbackNotifier::enableVideoRecording(int fps)
 
 void CallbackNotifier::disableVideoRecording()
 {
-    LOGV("%s:", __FUNCTION__);
+    ALOGV("%s:", __FUNCTION__);
 
     Mutex::Autolock locker(&mObjectLock);
     mVideoRecEnabled = false;
@@ -192,7 +192,7 @@ status_t CallbackNotifier::storeMetaDataInBuffers(bool enable)
      * return actual frame data with CAMERA_MSG_VIDEO_FRAME. Return
      * INVALID_OPERATION to mean metadata is not supported. */
      
-	LOGV("storeMetaDataInBuffers, %s", enable ? "true" : "false");
+	ALOGV("storeMetaDataInBuffers, %s", enable ? "true" : "false");
     mUseMetaDataBufferMode = enable;
 
     return NO_ERROR;
@@ -250,7 +250,7 @@ void CallbackNotifier::onNextFrameHW(const void* frame,
         } 
 		else 
 		{
-            LOGE("%s: Memory failure in CAMERA_MSG_VIDEO_FRAME", __FUNCTION__);
+            ALOGE("%s: Memory failure in CAMERA_MSG_VIDEO_FRAME", __FUNCTION__);
         }
     }
 
@@ -265,7 +265,7 @@ void CallbackNotifier::onNextFrameHW(const void* frame,
         } 
 		else 
 		{
-            LOGE("%s: Memory failure in CAMERA_MSG_PREVIEW_FRAME", __FUNCTION__);
+            ALOGE("%s: Memory failure in CAMERA_MSG_PREVIEW_FRAME", __FUNCTION__);
         }
     }
 }
@@ -284,7 +284,7 @@ void CallbackNotifier::onNextFrameSW(const void* frame,
                                cam_buff, 0, mCallbackCookie);
 			cam_buff->release(cam_buff);		// star add
         } else {
-            LOGE("%s: Memory failure in CAMERA_MSG_VIDEO_FRAME", __FUNCTION__);
+            ALOGE("%s: Memory failure in CAMERA_MSG_VIDEO_FRAME", __FUNCTION__);
         }
     }
 
@@ -296,7 +296,7 @@ void CallbackNotifier::onNextFrameSW(const void* frame,
             mDataCB(CAMERA_MSG_PREVIEW_FRAME, cam_buff, 0, NULL, mCallbackCookie);
             cam_buff->release(cam_buff);
         } else {
-            LOGE("%s: Memory failure in CAMERA_MSG_PREVIEW_FRAME", __FUNCTION__);
+           ALOGE("%s: Memory failure in CAMERA_MSG_PREVIEW_FRAME", __FUNCTION__);
         }
     }
 }
@@ -327,7 +327,7 @@ void CallbackNotifier::takePictureHW(const void* frame, V4L2Camera* camera_dev)
 		return ;
 	}
 	
-	LOGV("%s, taking photo begin", __FUNCTION__);
+	ALOGV("%s, taking photo begin", __FUNCTION__);
     /* This happens just once. */
     mTakingPicture = false;
     /* The sequence of callbacks during picture taking is:
@@ -355,7 +355,7 @@ void CallbackNotifier::takePictureHW(const void* frame, V4L2Camera* camera_dev)
         } 
 		else 
 		{
-            LOGE("%s: Memory failure in CAMERA_MSG_PREVIEW_FRAME", __FUNCTION__);
+            ALOGE("%s: Memory failure in CAMERA_MSG_PREVIEW_FRAME", __FUNCTION__);
         }
     }
 	
@@ -427,7 +427,7 @@ void CallbackNotifier::takePictureHW(const void* frame, V4L2Camera* camera_dev)
 			jpeg_enc.enable_crop		= 0;
 		}
 		
-		LOGV("addrY: %x, src: %dx%d, pic: %dx%d, quality: %d, rotate: %d, Gps method: %s, \
+		ALOGV("addrY: %x, src: %dx%d, pic: %dx%d, quality: %d, rotate: %d, Gps method: %s, \
 			thumbW: %d, thumbH: %d, thubmFactor: %d, crop: [%d, %d, %d, %d]", 
 			jpeg_enc.addrY, 
 			jpeg_enc.src_w, jpeg_enc.src_h,
@@ -445,14 +445,14 @@ void CallbackNotifier::takePictureHW(const void* frame, V4L2Camera* camera_dev)
 		pOutBuf = (void *)malloc(jpeg_enc.pic_w * jpeg_enc.pic_h << 2);
 		if (pOutBuf == NULL)
 		{
-			LOGE("malloc picture memory failed");
+			ALOGE("malloc picture memory failed");
 			return ;
 		}
 		
 		int ret = JpegEnc(pOutBuf, &bufSize, &jpeg_enc);
 		if (ret < 0)
 		{
-			LOGE("JpegEnc failed");
+			ALOGE("JpegEnc failed");
 			return ;			
 		}
 
@@ -465,7 +465,7 @@ void CallbackNotifier::takePictureHW(const void* frame, V4L2Camera* camera_dev)
 		} 
 		else 
 		{
-			LOGE("%s: Memory failure in CAMERA_MSG_COMPRESSED_IMAGE", __FUNCTION__);
+			ALOGE("%s: Memory failure in CAMERA_MSG_COMPRESSED_IMAGE", __FUNCTION__);
 		}
 
 		if(pOutBuf != NULL)
@@ -488,11 +488,11 @@ void CallbackNotifier::takePictureHW(const void* frame, V4L2Camera* camera_dev)
         } 
 		else 
 		{
-            LOGE("%s: Memory failure in CAMERA_MSG_PREVIEW_FRAME", __FUNCTION__);
+            ALOGE("%s: Memory failure in CAMERA_MSG_PREVIEW_FRAME", __FUNCTION__);
         }
 	}
 	
-	LOGV("taking photo end");
+	ALOGV("taking photo end");
 }
 
 void CallbackNotifier::takePictureSW(const void* frame, V4L2Camera* camera_dev)
@@ -502,7 +502,7 @@ void CallbackNotifier::takePictureSW(const void* frame, V4L2Camera* camera_dev)
 		return ;
 	}
 	
-	LOGV("%s, taking photo begin", __FUNCTION__);
+	ALOGV("%s, taking photo begin", __FUNCTION__);
     /* This happens just once. */
     mTakingPicture = false;
     /* The sequence of callbacks during picture taking is:
@@ -532,10 +532,10 @@ void CallbackNotifier::takePictureSW(const void* frame, V4L2Camera* camera_dev)
                 mDataCB(CAMERA_MSG_COMPRESSED_IMAGE, jpeg_buff, 0, NULL, mCallbackCookie);
                 jpeg_buff->release(jpeg_buff);
             } else {
-                LOGE("%s: Memory failure in CAMERA_MSG_COMPRESSED_IMAGE", __FUNCTION__);
+                ALOGE("%s: Memory failure in CAMERA_MSG_COMPRESSED_IMAGE", __FUNCTION__);
             }
         } else {
-            LOGE("%s: Compression failure in CAMERA_MSG_COMPRESSED_IMAGE", __FUNCTION__);
+            ALOGE("%s: Compression failure in CAMERA_MSG_COMPRESSED_IMAGE", __FUNCTION__);
         }
     }
 }

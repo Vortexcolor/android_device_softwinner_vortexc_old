@@ -60,7 +60,7 @@ PreviewWindow::~PreviewWindow()
 status_t PreviewWindow::setPreviewWindow(struct preview_stream_ops* window,
                                          int preview_fps)
 {
-    LOGV("%s: current: %p -> new: %p", __FUNCTION__, mPreviewWindow, window);
+    ALOGV("%s: current: %p -> new: %p", __FUNCTION__, mPreviewWindow, window);
 	
     status_t res = NO_ERROR;
     Mutex::Autolock locker(&mObjectLock);
@@ -76,7 +76,7 @@ status_t PreviewWindow::setPreviewWindow(struct preview_stream_ops* window,
         if (res != NO_ERROR) {
             window = NULL;
             res = -res; // set_usage returns a negative errno.
-            LOGE("%s: Error setting preview window usage %d -> %s",
+            ALOGE("%s: Error setting preview window usage %d -> %s",
                  __FUNCTION__, res, strerror(res));
         }
     }
@@ -87,7 +87,7 @@ status_t PreviewWindow::setPreviewWindow(struct preview_stream_ops* window,
 
 status_t PreviewWindow::startPreview()
 {
-    LOGV("%s", __FUNCTION__);
+    ALOGV("%s", __FUNCTION__);
 
     Mutex::Autolock locker(&mObjectLock);
     mPreviewEnabled = true;
@@ -98,7 +98,7 @@ status_t PreviewWindow::startPreview()
 
 void PreviewWindow::stopPreview()
 {
-    LOGV("%s", __FUNCTION__);
+    ALOGV("%s", __FUNCTION__);
 
     Mutex::Autolock locker(&mObjectLock);
     mPreviewEnabled = false;
@@ -140,7 +140,7 @@ bool PreviewWindow::onNextFrameAvailableHW(const void* frame,
     /* Make sure that preview window dimensions are OK with the camera device */
     if (adjustPreviewDimensions(camera_dev) || mShouldAdjustDimensions) 
 	{
-        LOGD("%s: Adjusting preview windows %p geometry to %dx%d",
+        ALOGD("%s: Adjusting preview windows %p geometry to %dx%d",
              __FUNCTION__, mPreviewWindow, mPreviewFrameWidth,
              mPreviewFrameHeight);
         res = mPreviewWindow->set_buffers_geometryex(mPreviewWindow,
@@ -149,7 +149,7 @@ bool PreviewWindow::onNextFrameAvailableHW(const void* frame,
                                                    HWC_FORMAT_DEFAULT,
                                                    mScreenID);
         if (res != NO_ERROR) {
-            LOGE("%s: Error in set_buffers_geometry %d -> %s",
+            ALOGE("%s: Error in set_buffers_geometry %d -> %s",
                  __FUNCTION__, -res, strerror(-res));
 
 			mShouldAdjustDimensions = true;
@@ -164,7 +164,7 @@ bool PreviewWindow::onNextFrameAvailableHW(const void* frame,
 
 		mNewCrop = false;
 
-		LOGV("first hw: [%d, %d, %d, %d]", mRectCrop.left,
+		ALOGV("first hw: [%d, %d, %d, %d]", mRectCrop.left,
 										mRectCrop.top,
 										mRectCrop.right,
 										mRectCrop.bottom);
@@ -184,7 +184,7 @@ bool PreviewWindow::onNextFrameAvailableHW(const void* frame,
 
 	if (mOverlayFirstFrame)
 	{
-		LOGV("first frame true");
+		ALOGV("first frame true");
 		overlay_para.first_frame_flg = 1;
 		mOverlayFirstFrame = false;
 	}
@@ -193,7 +193,7 @@ bool PreviewWindow::onNextFrameAvailableHW(const void* frame,
 		overlay_para.first_frame_flg = 0;
 	}
 	
-	// LOGV("addrY: %x, addrC: %x, WXH: %dx%d", overlay_para.top_y, overlay_para.top_c, mPreviewFrameWidth, mPreviewFrameHeight);
+	// ALOGV("addrY: %x, addrC: %x, WXH: %dx%d", overlay_para.top_y, overlay_para.top_c, mPreviewFrameWidth, mPreviewFrameHeight);
 
 	if (mNewCrop)
 	{
@@ -206,7 +206,7 @@ bool PreviewWindow::onNextFrameAvailableHW(const void* frame,
 	res = mPreviewWindow->perform(mPreviewWindow, NATIVE_WINDOW_SETPARAMETER, HWC_LAYER_SETFRAMEPARA, (uint32_t)&overlay_para);
 	if (res != OK)
 	{
-		LOGE("NATIVE_WINDOW_SETPARAMETER failed");
+		ALOGE("NATIVE_WINDOW_SETPARAMETER failed");
 		return false;
 	}
 
@@ -225,7 +225,7 @@ bool PreviewWindow::onNextFrameAvailableSW(const void* frame,
     int res;
     Mutex::Autolock locker(&mObjectLock);
 
-	// LOGD("%s, timestamp: %lld", __FUNCTION__, timestamp);
+	// ALOGD("%s, timestamp: %lld", __FUNCTION__, timestamp);
 
     if (!isPreviewEnabled() || mPreviewWindow == NULL) 
 	{
@@ -237,23 +237,23 @@ bool PreviewWindow::onNextFrameAvailableSW(const void* frame,
         /* Need to set / adjust buffer geometry for the preview window.
          * Note that in the emulator preview window uses only RGB for pixel
          * formats. */
-        LOGD("%s: Adjusting preview windows %p geometry to %dx%d",
+        ALOGD("%s: Adjusting preview windows %p geometry to %dx%d",
              __FUNCTION__, mPreviewWindow, mPreviewFrameWidth,
              mPreviewFrameHeight);
 		
 #if PREVIEW_FMT_RGBA32
 		int format = HAL_PIXEL_FORMAT_RGBA_8888;
-		LOGV("preview format: HAL_PIXEL_FORMAT_RGBA_8888");
+		ALOGV("preview format: HAL_PIXEL_FORMAT_RGBA_8888");
 #else
 		int format = HAL_PIXEL_FORMAT_YCrCb_420_SP;
-		LOGV("preview format: HAL_PIXEL_FORMAT_YCrCb_420_SP");
+		ALOGV("preview format: HAL_PIXEL_FORMAT_YCrCb_420_SP");
 #endif
         res = mPreviewWindow->set_buffers_geometry(mPreviewWindow,
                                                    mPreviewFrameWidth,
                                                    mPreviewFrameHeight,
 												   format);
         if (res != NO_ERROR) {
-            LOGE("%s: Error in set_buffers_geometry %d -> %s",
+            ALOGE("%s: Error in set_buffers_geometry %d -> %s",
                  __FUNCTION__, -res, strerror(-res));
             // return false;
         }
@@ -262,10 +262,10 @@ bool PreviewWindow::onNextFrameAvailableSW(const void* frame,
 		res = mPreviewWindow->set_buffer_count(mPreviewWindow, 3);
 		if (res != 0) 
 		{
-	        LOGE("native_window_set_buffer_count failed: %s (%d)", strerror(-res), -res);
+	        ALOGE("native_window_set_buffer_count failed: %s (%d)", strerror(-res), -res);
 
 	        if ( ENODEV == res ) {
-	            LOGE("Preview surface abandoned!");
+	            ALOGE("Preview surface abandoned!");
 	            mPreviewWindow = NULL;
 	        }
 
@@ -277,7 +277,7 @@ bool PreviewWindow::onNextFrameAvailableSW(const void* frame,
 
 		mNewCrop = false;
 
-		LOGV("first sw: [%d, %d, %d, %d]", mRectCrop.left,
+		ALOGV("first sw: [%d, %d, %d, %d]", mRectCrop.left,
 										mRectCrop.top,
 										mRectCrop.right,
 										mRectCrop.bottom);
@@ -292,12 +292,12 @@ bool PreviewWindow::onNextFrameAvailableSW(const void* frame,
     int stride = 0;
     res = mPreviewWindow->dequeue_buffer(mPreviewWindow, &buffer, &stride);
     if (res != NO_ERROR || buffer == NULL) {
-        LOGE("%s: Unable to dequeue preview window buffer: %d -> %s",
+        ALOGE("%s: Unable to dequeue preview window buffer: %d -> %s",
             __FUNCTION__, -res, strerror(-res));
 
 		int undequeued = 0;
 		mPreviewWindow->get_min_undequeued_buffer_count(mPreviewWindow, &undequeued);
-		LOGW("now undequeued: %d", undequeued);
+		ALOGW("now undequeued: %d", undequeued);
 		
         return false;
     }
@@ -305,7 +305,7 @@ bool PreviewWindow::onNextFrameAvailableSW(const void* frame,
     /* Let the preview window to lock the buffer. */
     res = mPreviewWindow->lock_buffer(mPreviewWindow, buffer);
     if (res != NO_ERROR) {
-        LOGE("%s: Unable to lock preview window buffer: %d -> %s",
+        ALOGE("%s: Unable to lock preview window buffer: %d -> %s",
              __FUNCTION__, -res, strerror(-res));
         mPreviewWindow->cancel_buffer(mPreviewWindow, buffer);
         return false;
@@ -318,7 +318,7 @@ bool PreviewWindow::onNextFrameAvailableSW(const void* frame,
     GraphicBufferMapper& grbuffer_mapper(GraphicBufferMapper::get());
     res = grbuffer_mapper.lock(*buffer, GRALLOC_USAGE_SW_WRITE_OFTEN, rect, &img);
     if (res != NO_ERROR) {
-        LOGE("%s: grbuffer_mapper.lock failure: %d -> %s",
+        ALOGE("%s: grbuffer_mapper.lock failure: %d -> %s",
              __FUNCTION__, res, strerror(res));
         mPreviewWindow->cancel_buffer(mPreviewWindow, buffer);
         return false;
@@ -339,7 +339,7 @@ bool PreviewWindow::onNextFrameAvailableSW(const void* frame,
         /* Show it. */
         mPreviewWindow->enqueue_buffer(mPreviewWindow, buffer);
     } else {
-        LOGE("%s: Unable to obtain preview frame: %d", __FUNCTION__, res);
+        ALOGE("%s: Unable to obtain preview frame: %d", __FUNCTION__, res);
         mPreviewWindow->cancel_buffer(mPreviewWindow, buffer);
     }
 
@@ -372,7 +372,7 @@ bool PreviewWindow::adjustPreviewDimensions(V4L2Camera* camera_dev)
 
 int PreviewWindow::showLayer(bool on)
 {
-	LOGV("%s, %s", __FUNCTION__, on ? "on" : "off");
+	ALOGV("%s, %s", __FUNCTION__, on ? "on" : "off");
 	mLayerShowHW = on ? 1 : 0;
 	if (mPreviewWindow != NULL && mPreviewWindow->perform != NULL)
 	{
@@ -383,7 +383,7 @@ int PreviewWindow::showLayer(bool on)
 
 int PreviewWindow::setLayerFormat(int fmt)
 {
-	LOGV("%s, %d", __FUNCTION__, fmt);
+	ALOGV("%s, %d", __FUNCTION__, fmt);
 	mLayerFormat = fmt;	
 	mShouldAdjustDimensions = true;
 	return OK;
@@ -391,7 +391,7 @@ int PreviewWindow::setLayerFormat(int fmt)
 
 int PreviewWindow::setScreenID(int id)
 {
-	LOGV("%s, id: %d", __FUNCTION__, id);
+	ALOGV("%s, id: %d", __FUNCTION__, id);
 	mScreenID = id;
 	if (mPreviewWindow != NULL && mPreviewWindow->perform != NULL)
 	{

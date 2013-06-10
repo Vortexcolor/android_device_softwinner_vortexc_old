@@ -170,7 +170,7 @@ public:
      */
     inline int getFrameWidth() const
     {
-        LOGE_IF(!isStarted(), "%s: Device is not started", __FUNCTION__);
+        ALOGE_IF(!isStarted(), "%s: Device is not started", __FUNCTION__);
         return mFrameWidth;
     }
 
@@ -182,7 +182,7 @@ public:
      */
     inline int getFrameHeight() const
     {
-        LOGE_IF(!isStarted(), "%s: Device is not started", __FUNCTION__);
+        ALOGE_IF(!isStarted(), "%s: Device is not started", __FUNCTION__);
         return mFrameHeight;
     }
 
@@ -193,7 +193,7 @@ public:
      */
     inline size_t getFrameBufferSize() const
     {
-        LOGE_IF(!isStarted(), "%s: Device is not started", __FUNCTION__);
+        ALOGE_IF(!isStarted(), "%s: Device is not started", __FUNCTION__);
         return mFrameBufferSize;
     }
 
@@ -204,7 +204,7 @@ public:
      */
     inline int getPixelNum() const
     {
-        LOGE_IF(!isStarted(), "%s: Device is not started", __FUNCTION__);
+        ALOGE_IF(!isStarted(), "%s: Device is not started", __FUNCTION__);
         return mTotalPixels;
     }
 
@@ -230,7 +230,7 @@ public:
      */
     inline uint32_t getOriginalPixelFormat() const
     {
-        LOGE_IF(!isStarted(), "%s: Device is not started", __FUNCTION__);
+        ALOGE_IF(!isStarted(), "%s: Device is not started", __FUNCTION__);
         return mPixelFormat;
     }
 
@@ -332,7 +332,7 @@ protected:
 
             inline ~WorkerThread()
             {
-                LOGW_IF(mThreadControl >= 0 || mControlFD >= 0,
+                ALOGW_IF(mThreadControl >= 0 || mControlFD >= 0,
                         "%s: Control FDs are opened in the destructor",
                         __FUNCTION__);
                 if (mThreadControl >= 0) {
@@ -513,7 +513,7 @@ public:
 	inline void setTakingPicture(bool taking)
 	{
 		pthread_mutex_lock(&mMutexTakePhotoEnd);
-		LOGV("setTakingPicture : %s", taking ? "true" : "false");
+		ALOGV("setTakingPicture : %s", taking ? "true" : "false");
 		mInPictureThread = taking;
 		mTakingPicture = taking;
 		pthread_mutex_unlock(&mMutexTakePhotoEnd);
@@ -538,7 +538,7 @@ public:
 		pthread_mutex_lock(&mMutexThreadRunning);
 		if (!mThreadRunning)
 		{
-			LOGV("setThreadRunning true");
+			ALOGV("setThreadRunning true");
 			mThreadRunning = running;
 			pthread_cond_signal(&mCondThreadRunning);
 		}
