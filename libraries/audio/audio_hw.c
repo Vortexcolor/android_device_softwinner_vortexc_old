@@ -41,7 +41,7 @@
 
 #include <cutils/properties.h> // for property_get
 
-#define F_LOG LOGV("%s, line: %d", __FUNCTION__, __LINE__);
+#define F_LOG ALOGV("%s, line: %d", __FUNCTION__, __LINE__);
 
 /* Mixer control names */
 #define MIXER_DL2_LEFT_EQUALIZER            "DL2 Left Equalizer"
@@ -610,7 +610,7 @@ static int set_route_by_array(struct mixer *mixer, struct route_setting *route,
 
 static int start_call(struct sunxi_audio_device *adev)
 {
-    LOGE("Opening modem PCMs");
+    ALOGE("Opening modem PCMs");
 
     pcm_config_vx.rate = adev->wb_amr ? VX_WB_SAMPLING_RATE : VX_NB_SAMPLING_RATE;
 
@@ -618,7 +618,7 @@ static int start_call(struct sunxi_audio_device *adev)
     if (adev->pcm_modem_dl == NULL) {
         adev->pcm_modem_dl = pcm_open(0, PORT_MODEM, PCM_OUT, &pcm_config_vx);
         if (!pcm_is_ready(adev->pcm_modem_dl)) {
-            LOGE("cannot open PCM modem DL stream: %s", pcm_get_error(adev->pcm_modem_dl));
+            ALOGE("cannot open PCM modem DL stream: %s", pcm_get_error(adev->pcm_modem_dl));
             goto err_open_dl;
         }
     }
@@ -626,7 +626,7 @@ static int start_call(struct sunxi_audio_device *adev)
     if (adev->pcm_modem_ul == NULL) {
         adev->pcm_modem_ul = pcm_open(0, PORT_MODEM, PCM_IN, &pcm_config_vx);
         if (!pcm_is_ready(adev->pcm_modem_ul)) {
-            LOGE("cannot open PCM modem UL stream: %s", pcm_get_error(adev->pcm_modem_ul));
+            ALOGE("cannot open PCM modem UL stream: %s", pcm_get_error(adev->pcm_modem_ul));
             goto err_open_ul;
         }
     }
@@ -648,7 +648,7 @@ err_open_dl:
 
 static void end_call(struct sunxi_audio_device *adev)
 {
-    LOGE("Closing modem PCMs");
+    ALOGE("Closing modem PCMs");
 
 	if (adev->pcm_modem_dl != NULL)
 	{
@@ -883,7 +883,7 @@ static void force_all_standby(struct sunxi_audio_device *adev)
 static void select_mode(struct sunxi_audio_device *adev)
 {
     if (adev->mode == AUDIO_MODE_IN_CALL) {
-        LOGE("Entering IN_CALL state, in_call=%d", adev->in_call);
+        ALOGE("Entering IN_CALL state, in_call=%d", adev->in_call);
         if (!adev->in_call) {
             force_all_standby(adev);
             /* force earpiece route for in call state if speaker is the
@@ -910,7 +910,7 @@ static void select_mode(struct sunxi_audio_device *adev)
             adev->in_call = 1;
         }
     } else {
-        LOGE("Leaving IN_CALL state, in_call=%d, mode=%d",
+        ALOGE("Leaving IN_CALL state, in_call=%d, mode=%d",
              adev->in_call, adev->mode);
         if (adev->in_call) {
             adev->in_call = 0;
@@ -1123,27 +1123,27 @@ static int start_output_stream(struct sunxi_stream_out *out)
 	{
 	    if(atoi(prop_value) == AUDIO_DEVICE_OUT_SPEAKER)
 	    {
-			LOGD("start_output_stream, AUDIO_DEVICE_OUT_SPEAKER");
+			ALOGD("start_output_stream, AUDIO_DEVICE_OUT_SPEAKER");
 			device = AUDIO_DEVICE_OUT_SPEAKER;
 		}
 		else if(atoi(prop_value) == AUDIO_DEVICE_OUT_AUX_DIGITAL)
 		{
-			LOGD("start_output_stream AUDIO_DEVICE_OUT_AUX_DIGITAL");
+			ALOGD("start_output_stream AUDIO_DEVICE_OUT_AUX_DIGITAL");
 			device = AUDIO_DEVICE_OUT_AUX_DIGITAL;
 		}
 		else if(atoi(prop_value) == AUDIO_DEVICE_OUT_DGTL_DOCK_HEADSET)
 		{
-			LOGD("start_output_stream AUDIO_DEVICE_OUT_DGTL_DOCK_HEADSET");
+			ALOGD("start_output_stream AUDIO_DEVICE_OUT_DGTL_DOCK_HEADSET");
 			device = AUDIO_DEVICE_OUT_DGTL_DOCK_HEADSET;
 		}
 		else
 		{
-			LOGW("unknown audio.routing : %s", prop_value);
+			ALOGW("unknown audio.routing : %s", prop_value);
 		}
 	}
 	else
 	{
-		// LOGW("get audio.routing failed");
+		// ALOGW("get audio.routing failed");
 	}
 
 	adev->devices = device;
@@ -1174,12 +1174,12 @@ static int start_output_stream(struct sunxi_stream_out *out)
     out->config.avail_min = LONG_PERIOD_SIZE;
     out->low_power = 1;
 	
-    LOGV("start_output_stream: card:%d, port:%d, rate:%d",card,port,out->config.rate);
+    ALOGV("start_output_stream: card:%d, port:%d, rate:%d",card,port,out->config.rate);
 
     out->pcm = pcm_open_req(card, port, PCM_OUT | PCM_MMAP | PCM_NOIRQ, &out->config, DEFAULT_OUT_SAMPLING_RATE);
 
     if (!pcm_is_ready(out->pcm)) {
-        LOGE("cannot open pcm_out driver: %s", pcm_get_error(out->pcm));
+        ALOGE("cannot open pcm_out driver: %s", pcm_get_error(out->pcm));
         pcm_close(out->pcm);
         adev->active_output = NULL;
         return -ENOMEM;
@@ -1198,15 +1198,15 @@ static int start_output_stream(struct sunxi_stream_out *out)
 							   &out->resampler);
 		if (ret != 0)
 		{
-			LOGE("create out resampler failed, %d -> %d", DEFAULT_OUT_SAMPLING_RATE, out->config.rate);
+			ALOGE("create out resampler failed, %d -> %d", DEFAULT_OUT_SAMPLING_RATE, out->config.rate);
 			return ret;
 		}
 		
-		LOGV("create out resampler OK, %d -> %d", DEFAULT_OUT_SAMPLING_RATE, out->config.rate);
+		ALOGV("create out resampler OK, %d -> %d", DEFAULT_OUT_SAMPLING_RATE, out->config.rate);
 	}
 	else
 	{
-		LOGV("do not use out resampler");
+		ALOGV("do not use out resampler");
 	}
 
 	if (out->resampler)
@@ -1328,7 +1328,7 @@ static int get_playback_delay(struct sunxi_stream_out *out,
         buffer->time_stamp.tv_sec  = 0;
         buffer->time_stamp.tv_nsec = 0;
         buffer->delay_ns           = 0;
-        LOGV("get_playback_delay(): pcm_get_htimestamp error,"
+        ALOGV("get_playback_delay(): pcm_get_htimestamp error,"
                 "setting playbackTimestamp to 0");
         return status;
     }
@@ -1656,7 +1656,7 @@ static int start_input_stream(struct sunxi_stream_in *in)
     in->pcm = pcm_open_req(0, PORT_CODEC, PCM_IN, &in->config, in->requested_rate);
 
     if (!pcm_is_ready(in->pcm)) {
-        LOGE("cannot open pcm_in driver: %s", pcm_get_error(in->pcm));
+        ALOGE("cannot open pcm_in driver: %s", pcm_get_error(in->pcm));
         pcm_close(in->pcm);
         adev->active_input = NULL;
         return -ENOMEM;
@@ -1673,16 +1673,16 @@ static int start_input_stream(struct sunxi_stream_in *in)
 							   &in->buf_provider,
 							   &in->resampler);
 		if (ret != 0) {
-			LOGE("create in resampler failed, %d -> %d", DEFAULT_OUT_SAMPLING_RATE, in->config.rate);
+			ALOGE("create in resampler failed, %d -> %d", DEFAULT_OUT_SAMPLING_RATE, in->config.rate);
 			ret = -EINVAL;
 			goto err;
 		}
 
-		LOGV("create in resampler OK, %d -> %d", DEFAULT_OUT_SAMPLING_RATE, in->config.rate);
+		ALOGV("create in resampler OK, %d -> %d", DEFAULT_OUT_SAMPLING_RATE, in->config.rate);
 	}
 	else
 	{
-		LOGV("do not use in resampler");
+		ALOGV("do not use in resampler");
 	}
 
     /* if no supported sample rate is available, use the resampler */
@@ -1858,7 +1858,7 @@ static void get_capture_delay(struct sunxi_stream_in *in,
         buffer->time_stamp.tv_sec  = 0;
         buffer->time_stamp.tv_nsec = 0;
         buffer->delay_ns           = 0;
-        LOGW("read get_capture_delay(): pcm_htimestamp error");
+        ALOGW("read get_capture_delay(): pcm_htimestamp error");
         return;
     }
 
@@ -1879,7 +1879,7 @@ static void get_capture_delay(struct sunxi_stream_in *in,
 
     buffer->time_stamp = tstamp;
     buffer->delay_ns   = delay_ns;
-    LOGV("get_capture_delay time_stamp = [%ld].[%ld], delay_ns: [%d],"
+    ALOGV("get_capture_delay time_stamp = [%ld].[%ld], delay_ns: [%d],"
          " kernel_delay:[%ld], buf_delay:[%ld], rsmp_delay:[%ld], kernel_frames:[%d], "
          "in->frames_in:[%d], in->proc_frames_in:[%d], frames:[%d]",
          buffer->time_stamp.tv_sec , buffer->time_stamp.tv_nsec, buffer->delay_ns,
@@ -1893,7 +1893,7 @@ static int32_t update_echo_reference(struct sunxi_stream_in *in, size_t frames)
     struct echo_reference_buffer b;
     b.delay_ns = 0;
 
-    LOGV("update_echo_reference, frames = [%d], in->ref_frames_in = [%d],  "
+    ALOGV("update_echo_reference, frames = [%d], in->ref_frames_in = [%d],  "
           "b.frame_count = [%d]",
          frames, in->ref_frames_in, frames - in->ref_frames_in);
     if (in->ref_frames_in < frames) {
@@ -1912,12 +1912,12 @@ static int32_t update_echo_reference(struct sunxi_stream_in *in, size_t frames)
         if (in->echo_reference->read(in->echo_reference, &b) == 0)
         {
             in->ref_frames_in += b.frame_count;
-            LOGV("update_echo_reference: in->ref_frames_in:[%d], "
+            ALOGV("update_echo_reference: in->ref_frames_in:[%d], "
                     "in->ref_buf_size:[%d], frames:[%d], b.frame_count:[%d]",
                  in->ref_frames_in, in->ref_buf_size, frames, b.frame_count);
         }
     } else
-        LOGW("update_echo_reference: NOT enough frames to read ref buffer");
+        ALOGW("update_echo_reference: NOT enough frames to read ref buffer");
     return b.delay_ns;
 }
 
@@ -2004,7 +2004,7 @@ static int get_next_buffer(struct resampler_buffer_provider *buffer_provider,
         return -ENODEV;
     }
 
-	LOGV("get_next_buffer: in->config.period_size: %d, audio_stream_frame_size: %d", 
+	ALOGV("get_next_buffer: in->config.period_size: %d, audio_stream_frame_size: %d", 
 		in->config.period_size, audio_stream_frame_size(&in->stream.common));
     if (in->frames_in == 0) {
         in->read_status = pcm_read(in->pcm,
@@ -2012,7 +2012,7 @@ static int get_next_buffer(struct resampler_buffer_provider *buffer_provider,
                                    in->config.period_size *
                                        audio_stream_frame_size(&in->stream.common));
         if (in->read_status != 0) {
-            LOGE("get_next_buffer() pcm_read error %d, %s", in->read_status, strerror(errno));
+            ALOGE("get_next_buffer() pcm_read error %d, %s", in->read_status, strerror(errno));
             buffer->raw = NULL;
             buffer->frame_count = 0;
             return in->read_status;
@@ -2103,7 +2103,7 @@ static ssize_t process_frames(struct sunxi_stream_in *in, void* buffer, ssize_t 
                 in->proc_buf = (int16_t *)realloc(in->proc_buf,
                                          in->proc_buf_size *
                                              in->config.channels * sizeof(int16_t));
-                LOGV("process_frames(): in->proc_buf %p size extended to %d frames",
+                ALOGV("process_frames(): in->proc_buf %p size extended to %d frames",
                      in->proc_buf, in->proc_buf_size);
             }
             frames_rd = read_frames(in,
@@ -2333,7 +2333,7 @@ static int adev_open_output_stream(struct audio_hw_device *dev,
     *channels = out_get_channels(&out->stream.common);
     *sample_rate = out_get_sample_rate(&out->stream.common);
 
-	LOGV("adev_open_output_stream: req_sample_rate: %d, fmt: %x, channel_count: %d",
+	ALOGV("adev_open_output_stream: req_sample_rate: %d, fmt: %x, channel_count: %d",
 		*sample_rate, *format, *channels);
 
     *stream_out = &out->stream;
@@ -2494,7 +2494,7 @@ static int adev_open_input_stream(struct audio_hw_device *dev, uint32_t devices,
     int ret;
     int channel_count = popcount(*channel_mask);
 
-	LOGV("adev_open_input_stream: req_sample_rate: %d, fmt: %x, channel_count: %d",
+	ALOGV("adev_open_input_stream: req_sample_rate: %d, fmt: %x, channel_count: %d",
 		*sample_rate, *format, channel_count);
 
     if (check_input_parameters(*sample_rate, *format, channel_count) != 0)
@@ -2526,7 +2526,7 @@ static int adev_open_input_stream(struct audio_hw_device *dev, uint32_t devices,
     memcpy(&in->config, &pcm_config_mm_in, sizeof(pcm_config_mm_in));
     in->config.channels = channel_count;
 
-	LOGV("to malloc in-buffer: period_size: %d, frame_size: %d", 
+	ALOGV("to malloc in-buffer: period_size: %d, frame_size: %d", 
 		in->config.period_size, audio_stream_frame_size(&in->stream.common));
     in->buffer = malloc(in->config.period_size *
                         audio_stream_frame_size(&in->stream.common) * 8);
@@ -2646,7 +2646,7 @@ static int adev_open(const hw_module_t* module, const char* name,
     adev->mixer = mixer_open(0);
     if (!adev->mixer) {
         free(adev);
-        LOGE("Unable to open the mixer, aborting.");
+        ALOGE("Unable to open the mixer, aborting.");
         return -EINVAL;
     }
 
@@ -2701,8 +2701,8 @@ static int adev_open(const hw_module_t* module, const char* name,
         !adev->mixer_ctls.earpiece_volume) {
         mixer_close(adev->mixer);
         free(adev);
-        LOGE("Unable to locate all mixer controls, aborting.");
-        LOGW("mixer value: %d %d\n %d %d\n %d %d\n %d %d\n %d %d\n %d %d\n %d %d\n %d %d\n %d %d\n %d\n",
+        ALOGE("Unable to locate all mixer controls, aborting.");
+        ALOGW("mixer value: %d %d\n %d %d\n %d %d\n %d %d\n %d %d\n %d %d\n %d %d\n %d %d\n %d %d\n %d\n",
         !adev->mixer_ctls.dl1_eq, !adev->mixer_ctls.vx_dl2_volume,
         !adev->mixer_ctls.mm_dl2_volume , !adev->mixer_ctls.mm_dl1 ,
         !adev->mixer_ctls.vx_dl1 , !adev->mixer_ctls.mm_dl2 ,
