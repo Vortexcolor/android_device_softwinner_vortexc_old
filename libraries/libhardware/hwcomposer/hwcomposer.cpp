@@ -1880,7 +1880,7 @@ static int hwc_setparameter(hwc_composer_device_t *dev,uint32_t param,uint32_t v
     }
     else if(param == HWC_LAYER_SETSCREEN)
     {
-    	LOGV("param == HWC_LAYER_SETSCREEN,value = %d\n",value);
+    	ALOGV("param == HWC_LAYER_SETSCREEN,value = %d\n",value);
     	ret = hwc_setscreen(ctx,value);
     }
 	else if(param == HWC_LAYER_SHOW)
