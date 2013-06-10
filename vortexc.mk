@@ -34,8 +34,6 @@ PRODUCT_COPY_FILES := \
 	device/softwinner/vortexc/prebuilt/ramdisk/ueventd.sun5i.rc:root/ueventd.sun5i.rc \
 	device/softwinner/vortexc/prebuilt/ramdisk/nand.ko:root/nand.ko
 
-<<<<<<< HEAD
-=======
 PRODUCT_CHARACTERISTICS := tablet
 
 PRODUCT_TAGS += dalvik.gc.type-precise
@@ -75,7 +73,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 DEVICE_PACKAGE_OVERLAYS := device/softwinner/vortexc/overlay
 
->>>>>>> 6cb79b76db4cfdbf62aa0484915036e393640257
 # Permissions
 PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/tablet_core_hardware.xml:system/etc/permissions/tablet_core_hardware.xml \
