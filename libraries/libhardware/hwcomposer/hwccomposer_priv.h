@@ -16,7 +16,7 @@
 #define  MAX_FBNUM		8
 #define  MAX_LAYERNUM	8
 
-typedef struct sun4i_hwc_layer
+typedef struct sun5i_hwc_layer
 {
 	hwc_layer_t			base;
 	
@@ -49,14 +49,14 @@ typedef struct sun4i_hwc_layer
     uint32_t			screen;
     uint32_t			currenthandle;
 	uint32_t			cur_frameid;
-} sun4i_hwc_layer_t;
+} sun5i_hwc_layer_t;
 
 typedef struct hwc_context_t 
 {
     hwc_composer_device_t 	device;
     hwc_procs_t 			*procs;
     int						dispfd;
-    sun4i_hwc_layer_t		hwc_layer;
+    sun5i_hwc_layer_t		hwc_layer;
     uint32_t				hwc_screen;
     bool					hwc_layeropen;
     bool                    hwc_frameset;  /*is frame set*/
@@ -67,6 +67,6 @@ typedef struct hwc_context_t
 	bool					cur_3denable;
     /* our private state goes below here */
 	bool					wait_layer_open;
-}sun4i_hwc_context_t;
+}sun5i_hwc_context_t;
 
 #endif
