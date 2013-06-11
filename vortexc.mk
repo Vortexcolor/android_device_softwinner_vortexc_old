@@ -34,44 +34,6 @@ PRODUCT_COPY_FILES := \
 	device/softwinner/vortexc/prebuilt/ramdisk/ueventd.sun5i.rc:root/ueventd.sun5i.rc \
 	device/softwinner/vortexc/prebuilt/ramdisk/nand.ko:root/nand.ko
 
-PRODUCT_CHARACTERISTICS := tablet
-
-PRODUCT_TAGS += dalvik.gc.type-precise
-
-PRODUCT_PROPERTY_OVERRIDES += \
-	ro.opengles.version = 131072 \
-	debug.egl.hw=1 \
-	ro.display.switch=1 \
-	ro.sf.lcd_density=120 \
-	hwui.render_dirty_regions=false \
-	wifi.interface = wlan0 \
-	wifi.supplicant_scan_interval = 150 \
-	persist.sys.strictmode.visual=0 \
-	persist.sys.strictmode.disable=1 \
-	persist.sys.usb.config=mass_storage,adb \
-	dalvik.vm.verify-bytecode=false \
-	dalvik.vm.dexopt-flags=v=n,o=v \
-	dalvik.vm.execution-mode=int:jit \
-	persist.sys.timezone=Europe/Rome \
-	persist.sys.language=es \
-	persist.sys.country=ES \
-	ro.com.google.locationfeatures=1 \
-	dalvik.vm.lockprof.threshold=500 \
-	ro.kernel.android.checkjni=0 \
-	dalvik.vm.checkjni=false \
-	dalvik.vm.dexopt-data-only=1 \
-	ro.vold.umsdirtyratio=20 \
-	persist.sys.use_dithering=0 \
-	persist.sys.purgeable_assets=0 \
-	windowsmgr.max_events_per_sec=240 \
-	view.touch_slop=2 \
-	view.minimum_fling_velocity=25 \
-	ro.additionalmounts=/storage/sdcard1 \
-	ro.vold.switchablepair=/storage/sdcard0,/storage/sdcard1 \
-	persist.sys.vold.switchexternal=0 \
-	ro.disable_phablet_ui=1
-
-DEVICE_PACKAGE_OVERLAYS := device/softwinner/vortexc/overlay
 
 # Permissions
 PRODUCT_COPY_FILES += \
