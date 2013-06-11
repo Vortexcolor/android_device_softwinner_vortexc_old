@@ -30,7 +30,7 @@ LOCAL_SHARED_LIBRARIES += \
 	libjpeg \
 	libskia \
 	libandroid_runtime \
-	libCedarxbase \
+	libCedarX \
 	libcedarxosal
 	
 LOCAL_C_INCLUDES += 								\
