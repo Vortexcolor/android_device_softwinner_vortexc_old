@@ -1,41 +1,23 @@
 import init.sun5i.usb.rc
 
 on early-init
-export EXTERNAL_STORAGE /mnt/sdcard
-        mkdir /mnt/sdcard 0000 system system
-        mkdir /mnt/extsd 0000 system system
-        mkdir /mnt/usbhost1 0000 system system
-        symlink /mnt/sdcard /sdcard
-		
+	export EXTERNAL_STORAGE /storage/sdcard0
+        export SECONDARY_STORAGE /storage/sdcard1
+        mkdir /storage 0050 system sdcard_r
+        mkdir /storage/sdcard0 0000 system system
+        mkdir /storage/sdcard1 0000 system system
+        mkdir /storage/sdcard2 0000 system system
+        symlink /storage/sdcard0 /sdcard
+        symlink /storage/sdcard0 /mnt/sdcard		
+
 	mkdir /databk 0700 root  system
 
 on fs
-    mount ext4 /dev/block/nandd /system wait noatime nodev barrier=0
-	
-	mount vfat /dev/block/nandj /mnt/sdcard rw utf8 noatime nodiratime
-
-# try to mount /data
-	wait /dev/block/nande
-	mount ext4 /dev/block/nande /data wait noatime nosuid nodev barrier=0
-	setupfs /dev/block/nande
-	umount /data
-	exec /system/bin/logwrapper /system/bin/e2fsck -y /dev/block/nande
-	exec /system/bin/busybox mount -t ext4 -o noatime,nosuid,nodev,barrier=0,journal_checksum,noauto_da_alloc /dev/block/nande /data
-	mount ext4 /dev/block/nande /data wait noatime nosuid nodev barrier=0
-
-# try to mount /cache
-    mount ext4 /dev/block/nandh /cache wait noatime nosuid nodev barrier=0
-	setupfs /dev/block/nandh
-	umount /cache
-    exec /system/bin/logwrapper /system/bin/e2fsck -y /dev/block/nandh
-    exec /system/bin/busybox mount -t ext4 -o noatime,nosuid,nodev,barrier=0,journal_checksum,noauto_da_alloc /dev/block/nandh /cache
-    
-#try to format /databk
-    wait /dev/block/nandi
-    mount ext4 /dev/block/nandi /databk wait noatime nosuid nodev barrier=0
-	  setupfs /dev/block/nandi
-	  umount /databk
-    rmdir /databk
+	exec /system/bin/e2fsck -y /dev/block/data
+        exec /system/bin/e2fsck -y /dev/block/cache
+        mount ext4 /dev/block/nandd /system wait ro noatime nodev barrier=0 nobh
+        mount ext4 /dev/block/nande /data wait noatime nodev barrier=0 nobh data=writeback noauto_da_alloc commit=30
+        mount ext4 /dev/block/nandh /cache wait noatime nodev barrier=0 nobh data=writeback noauto_da_alloc commit=30
 
 on boot
 
