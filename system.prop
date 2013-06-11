@@ -11,6 +11,9 @@ hwui.render_dirty_regions=false
 debug.sf.hw=1
 video.accelerate.hw=1
 
+# 7 inch tab --> phablet UI
+ro.disable_phablet_ui=0
+
 # WIFI / RIL
 wifi.interface = wlan0
 wifi.supplicant_scan_interval = 150
